@@ -1,0 +1,124 @@
+@model MantenimientoTrabajadores.Models.Trabajador
+
+<!-- Fondo oscuro -->
+<div id="modalEliminar" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+
+    <div class="relative w-full max-w-lg bg-background-light dark:bg-background-dark rounded-xl shadow-2xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-border-light dark:border-border-dark">
+            <p class="text-text-light dark:text-text-dark text-xl font-bold">Eliminar Trabajador</p>
+
+            <button onclick="cerrarModalEliminar()"
+                    class="text-placeholder-light dark:text-placeholder-dark hover:text-text-light dark:hover:text-text-dark">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 flex flex-col gap-4">
+
+            <!-- Ícono de advertencia -->
+            <div class="flex justify-center mb-2">
+                <span class="material-symbols-outlined text-red-500 text-6xl">
+                    warning
+                </span>
+            </div>
+
+            <!-- Mensaje -->
+            <p class="text-center text-lg font-semibold text-text-light dark:text-text-dark">
+                ¿Está seguro de eliminar el registro?
+            </p>
+
+            <!-- Información del trabajador -->
+            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Nombre:</strong> @Model.Nombres @Model.Apellidos
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Documento:</strong> @Model.TipoDocumento - @Model.NumeroDocumento
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    <strong>Sexo:</strong> @(Model.Sexo == "M" ? "Masculino" : "Femenino")
+                </p>
+            </div>
+
+            <input type="hidden" id="idEliminar" value="@Model.Id" />
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-border-light dark:border-border-dark">
+
+            <button onclick="cerrarModalEliminar()"
+                    class="rounded-lg px-4 py-2 text-sm text-placeholder-light dark:text-placeholder-dark hover:bg-gray-100 dark:hover:bg-gray-800">
+                Cancelar
+            </button>
+
+            <button id="btnEliminarConfirmado"
+                    class="bg-red-600 hover:bg-red-700 text-white rounded-lg px-6 py-2 text-sm font-medium">
+                Eliminar
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function cerrarModalEliminar() {
+    $("#modalEliminar").remove();
+    }
+
+    $("#btnEliminarConfirmado").click(function () {
+
+        let id = $("#idEliminar").val();
+
+        // CONFIRMACIÓN OPCIONAL – Si quieres usar tu modal directo, puedes quitar esto
+        Swal.fire({
+            title: "¿Eliminar trabajador?",
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d63031",
+            cancelButtonColor: "#636e72",
+            confirmButtonText: "Eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                url: "/Trabajadores/EliminarConfirmado",
+                type: "POST",
+                data: { id: id },
+
+                success: function (response) {
+
+                    cerrarModalEliminar();
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "¡Eliminado!",
+                        text: response.message || "El trabajador fue eliminado correctamente.",
+                        confirmButtonColor: "#6c5ce7"
+                    }).then(() => {
+                        cargarTabla();
+                    });
+                },
+
+                error: function (xhr) {
+
+                    let msg = xhr.responseText || "Ocurrió un error al eliminar el trabajador.";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: msg,
+                        confirmButtonColor: "#d63031"
+                    });
+                }
+            });
+
+        });
+    });
+</script>

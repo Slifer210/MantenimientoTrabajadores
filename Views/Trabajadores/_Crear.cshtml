@@ -1,0 +1,216 @@
+<!-- Fondo oscuro del modal -->
+<div id="modalCrear" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+
+    <div class="relative w-full max-w-3xl bg-background-light dark:bg-background-dark rounded-xl shadow-2xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-border-light dark:border-border-dark">
+            <p class="text-text-light dark:text-text-dark text-xl font-bold">Registrar Nuevo Trabajador</p>
+
+            <button onclick="cerrarModalCrear()" class="text-placeholder-light dark:text-placeholder-dark hover:text-text-light dark:hover:text-text-dark">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="flex flex-col gap-6 p-6">
+
+            <form id="formCrear" novalidate>
+
+                <!-- Nombres / Apellidos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Nombres -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Nombres</p>
+                        <input name="Nombres" class="form-input h-11 p-3 rounded-lg" placeholder="Ingrese los nombres" />
+                        <span data-error="Nombres" class="text-red-500 text-xs mt-1 hidden">Este campo es obligatorio</span>
+                    </label>
+
+                    <!-- Apellidos -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Apellidos</p>
+                        <input name="Apellidos" class="form-input h-11 p-3 rounded-lg" placeholder="Ingrese los apellidos" />
+                        <span data-error="Apellidos" class="text-red-500 text-xs mt-1 hidden">Este campo es obligatorio</span>
+                    </label>
+
+                </div>
+
+                <!-- Tipo Documento / Numero -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Tipo Documento -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Tipo de documento</p>
+                        <select name="TipoDocumento" class="form-input h-11 p-3 rounded-lg pr-8">
+                            <option value="">Seleccione un tipo</option>
+                            <option value="DNI">DNI</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Carnet Extranjería">Carnet Extranjería</option>
+                        </select>
+                        <span data-error="TipoDocumento" class="text-red-500 text-xs mt-1 hidden">Seleccione un tipo de documento</span>
+                    </label>
+
+                    <!-- Numero Documento -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Número de documento</p>
+                        <input name="NumeroDocumento" class="form-input h-11 p-3 rounded-lg" placeholder="Ingrese el número" />
+                        <span data-error="NumeroDocumento" class="text-red-500 text-xs mt-1 hidden">Este campo es obligatorio</span>
+                    </label>
+
+                </div>
+
+                <!-- Sexo / Fecha Nacimiento -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Sexo -->
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Sexo</p>
+
+                        <div class="flex gap-3">
+
+                            <!-- Masculino -->
+                            <label class="relative flex-1 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark h-11 cursor-pointer sexo-option"
+                                   data-value="M">
+                                Masculino
+                                <input type="radio" name="Sexo" value="M"
+                                       class="absolute inset-0 opacity-0 cursor-pointer">
+                            </label>
+
+                            <!-- Femenino -->
+                            <label class="relative flex-1 flex items-center justify-center rounded-lg border border-border-light dark:border-border-dark h-11 cursor-pointer sexo-option"
+                                   data-value="F">
+                                Femenino
+                                <input type="radio" name="Sexo" value="F"
+                                       class="absolute inset-0 opacity-0 cursor-pointer">
+                            </label>
+
+                        </div>
+
+                        <span data-error="Sexo" class="text-red-500 text-xs mt-1 hidden">Seleccione el sexo</span>
+                    </div>
+
+                    <!-- Fecha Nacimiento -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Fecha de nacimiento</p>
+                        <input type="date" name="FechaNacimiento" class="form-input h-11 p-3 rounded-lg" />
+                        <span data-error="FechaNacimiento" class="text-red-500 text-xs mt-1 hidden">Seleccione una fecha válida</span>
+                    </label>
+
+                </div>
+
+                <!-- Foto perfil -->
+                <div>
+                    <p class="text-sm font-medium pb-2">Foto (opcional)</p>
+                    <input type="file" name="FotoArchivo" accept="image/*" class="form-input w-full p-3 rounded-lg" />
+                </div>
+
+                <!-- Dirección -->
+                <label class="flex flex-col">
+                    <p class="text-sm font-medium pb-2">Dirección</p>
+                    <textarea name="Direccion" class="form-input min-h-24 p-3 rounded-lg" placeholder="Ingrese la dirección"></textarea>
+                    <span data-error="Direccion" class="text-red-500 text-xs mt-1 hidden">Este campo es obligatorio</span>
+                </label>
+
+            </form>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-border-light dark:border-border-dark">
+            <button onclick="cerrarModalCrear()" class="rounded-lg px-4 py-2 text-sm">Cancelar</button>
+
+            <button id="btnGuardarCrear" class="bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2 text-sm font-medium">
+                Guardar
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function cerrarModalCrear() {
+        $("#modalCrear").remove();
+    }
+
+    // Manejo visual dinámico del sexo
+    $(document).on("change", "input[name='Sexo']", function () {
+
+        const form = $(this).closest("form");
+
+        form.find(".sexo-option").removeClass("border-2 border-primary text-primary");
+
+        $(this).closest(".sexo-option")
+            .addClass("border-2 border-primary text-primary");
+    });
+
+    $("#btnGuardarCrear").click(function () {
+
+        let form = document.getElementById("formCrear");
+        let valid = true;
+
+        $("span[data-error]").addClass("hidden");
+
+        form.querySelectorAll("input[name], textarea[name], select[name]").forEach(input => {
+            if (input.type !== "radio" && input.value.trim() === "") {
+                valid = false;
+                $(`span[data-error='${input.name}']`).removeClass("hidden");
+            }
+        });
+
+        if (!$("input[name='Sexo']:checked").val()) {
+            valid = false;
+            $("span[data-error='Sexo']").removeClass("hidden");
+        }
+
+        if (!valid) return;
+
+        let formData = new FormData(form);
+
+        $.ajax({
+            url: "/Trabajadores/Crear",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                cerrarModalCrear();
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Registrado correctamente!",
+                    text: response.message || "El trabajador fue registrado con éxito.",
+                    confirmButtonColor: "#6c5ce7",
+                }).then(() => {
+                    cargarTabla();
+                });
+            },
+            error: function (xhr) {
+
+                let msg = xhr.responseText || "Ocurrió un error al registrar.";
+
+                // Detectar mensaje DNI duplicado
+                if (msg.includes("Ya existe un trabajador")) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "DNI duplicado",
+                        text: msg,
+                        confirmButtonColor: "#e17055"
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: msg,
+                    confirmButtonColor: "#d63031"
+                });
+            }
+        });
+
+    });
+
+</script>

@@ -1,0 +1,218 @@
+@model MantenimientoTrabajadores.Models.Trabajador
+
+<div id="modalEditar" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+
+    <div class="relative w-full max-w-3xl bg-background-light dark:bg-background-dark rounded-xl shadow-2xl">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between p-6 border-b border-border-light dark:border-border-dark">
+            <p class="text-text-light dark:text-text-dark text-xl font-bold">Editar Trabajador</p>
+
+            <button onclick="cerrarModalEditar()" 
+                    class="text-placeholder-light dark:text-placeholder-dark hover:text-text-light dark:hover:text-text-dark">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <!-- BODY -->
+        <div class="flex flex-col gap-6 p-6">
+
+            <form id="formEditar">
+
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <input type="hidden" name="Foto" value="@Model.Foto" />
+
+                <!-- Nombres / Apellidos -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Nombres</p>
+                        <input name="Nombres" value="@Model.Nombres" required
+                               class="form-input h-11 p-3 rounded-lg" />
+                    </label>
+
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Apellidos</p>
+                        <input name="Apellidos" value="@Model.Apellidos" required
+                               class="form-input h-11 p-3 rounded-lg" />
+                    </label>
+
+                </div>
+
+                <!-- Documento -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Tipo de documento</p>
+
+                        <select id="selectTipoDoc" name="TipoDocumento" required class="form-input h-11 p-3 rounded-lg">
+                            <option value="">Seleccione un tipo</option>
+                            <option value="DNI">DNI</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Carnet Extranjería">Carnet Extranjería</option>
+                        </select>
+
+                        <!-- Valor actual -->
+                        <input type="hidden" id="valorTipoDoc" value="@Model.TipoDocumento" />
+                    </label>
+
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Número de documento</p>
+                        <input name="NumeroDocumento" value="@Model.NumeroDocumento" required
+                               class="form-input h-11 p-3 rounded-lg" />
+                    </label>
+
+                </div>
+
+                <!-- Sexo / Fecha -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Sexo -->
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Sexo</p>
+
+                        <div class="flex gap-3">
+
+                            <!-- Masculino -->
+                            <label class="sexo-option relative flex-1 flex items-center justify-center h-11 rounded-lg border cursor-pointer
+                                          @(Model.Sexo == "M" ? "border-2 border-primary text-primary" : "")"
+                                   data-value="M">
+
+                                Masculino
+
+                                <input type="radio" name="Sexo" value="M"
+                                       class="absolute inset-0 opacity-0 cursor-pointer"
+                                       @(Model.Sexo == "M" ? "checked" : "") />
+                            </label>
+
+                            <!-- Femenino -->
+                            <label class="sexo-option relative flex-1 flex items-center justify-center h-11 rounded-lg border cursor-pointer
+                                          @(Model.Sexo == "F" ? "border-2 border-primary text-primary" : "")"
+                                   data-value="F">
+
+                                Femenino
+
+                                <input type="radio" name="Sexo" value="F"
+                                       class="absolute inset-0 opacity-0 cursor-pointer"
+                                       @(Model.Sexo == "F" ? "checked" : "") />
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <!-- Fecha nacimiento -->
+                    <label class="flex flex-col">
+                        <p class="text-sm font-medium pb-2">Fecha de nacimiento</p>
+                        <input type="date" name="FechaNacimiento"
+                               value="@Model.FechaNacimiento.ToString("yyyy-MM-dd")"
+                               required class="form-input h-11 p-3 rounded-lg" />
+                    </label>
+
+                </div>
+
+                <!-- FOTO -->
+                <label class="flex flex-col">
+                    <p class="text-sm font-medium pb-2">Foto actual</p>
+
+                    <img src="/fotos/@Model.Foto" class="w-28 h-28 rounded-full object-cover border mb-3"
+                         onerror="this.src='/fotos/default.png'">
+
+                    <p class="text-sm font-medium pb-2 mt-3">Subir nueva foto (opcional)</p>
+
+                    <input type="file" name="FotoArchivo" accept="image/*"
+                           class="form-input w-full p-3 rounded-lg" />
+                </label>
+
+                <!-- Dirección -->
+                <label class="flex flex-col">
+                    <p class="text-sm font-medium pb-2">Dirección</p>
+                    <textarea name="Direccion" class="form-input min-h-24 p-3 rounded-lg">@Model.Direccion</textarea>
+                </label>
+
+            </form>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="flex items-center justify-end gap-3 p-6 border-t border-border-light dark:border-border-dark">
+            <button onclick="cerrarModalEditar()" class="rounded-lg px-4 py-2 text-sm">Cancelar</button>
+
+            <button id="btnActualizar"
+                    class="bg-primary hover:bg-primary/90 text-white rounded-lg px-6 py-2 text-sm font-medium">
+                Actualizar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function cerrarModalEditar() {
+        $("#modalEditar").remove();
+    }
+    $(document).ready(function () {
+        let valor = $("#valorTipoDoc").val();
+        $("#selectTipoDoc").val(valor);
+    });
+
+    $(document).on("change", "input[name='Sexo']", function () {
+
+        const form = $(this).closest("form");
+
+        form.find(".sexo-option").removeClass("border-2 border-primary text-primary");
+
+        $(this).closest(".sexo-option")
+            .addClass("border-2 border-primary text-primary");
+    });
+
+    $("#btnActualizar").click(function () {
+
+        let form = document.getElementById("formEditar");
+        let formData = new FormData(form);
+
+        $.ajax({
+            url: "/Trabajadores/Editar",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+
+                cerrarModalEditar();
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Actualización exitosa!",
+                    text: response.message || "El trabajador se actualizó correctamente.",
+                    confirmButtonColor: "#6c5ce7"
+                }).then(() => {
+                    cargarTabla();
+                });
+            },
+
+            error: function (xhr) {
+
+                let msg = xhr.responseText || "Ocurrió un error al actualizar.";
+
+                // Detectar DNI duplicado desde backend
+                if (msg.includes("Ya existe un trabajador")) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "DNI duplicado",
+                        text: msg,
+                        confirmButtonColor: "#e17055"
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Error de validación",
+                    text: msg,
+                    confirmButtonColor: "#d63031"
+                });
+            }
+        });
+    });
+</script>

@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - MantenimientoTrabajadores</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#6324eb",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161121",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#131118] dark:text-white font-display">
+
+<div class="flex min-h-screen w-full">
+
+    <!-- SIDEBAR -->
+    <aside class="flex w-64 flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark p-4">
+
+        <!-- Marca del sistema -->
+        <div class="flex items-center gap-3 mb-6">
+            <div class="bg-center bg-cover rounded-full size-10"
+                 style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiYMpIFTdB0imgfwLlg4oSJAEj0RIPTWSNSETep9Ij0gTTWDkRYgrsKqPbcMfP8wytHA_6cHKl3_zHzRPl53-Bf3xrjmwYT5Km9c3aWmPvl3FRQCFEXgl2nwFUxmIltiQpgDP2QcLfVjW0_q-A61Psr3v2qlIwYf9KDqrC-iNwgmtR895ueb-e8Bx0Mkec07Tuzm8ek4SmT79D7hAGewTkfolcTJjQhDcWR86zVv9As0v9nEiTZNHVST-KFrGK1B48mdv95lufiXs");'>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-base font-semibold">MYPER HR Core</h1>
+                <p class="text-xs text-[#6e6189] dark:text-gray-400">Módulo de Gestión de Trabajadores</p>
+            </div>
+        </div>
+
+        <!-- NAVEGACIÓN -->
+        <nav class="flex flex-col gap-2">
+
+            <a href="/Home/Index"
+               class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20 transition">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/Trabajadores"
+               class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 dark:bg-primary/30 transition">
+                <span class="material-symbols-outlined text-primary dark:text-white" style="font-variation-settings:'FILL' 1;">group</span>
+                <span>Trabajadores</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20 transition">
+                <span class="material-symbols-outlined">bar_chart</span>
+                <span>Reportes</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20 transition">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Configuración</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20 transition">
+                <span class="material-symbols-outlined">help</span>
+                <span>Ayuda</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10">
+        @RenderBody()
+    </main>
+
+</div>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

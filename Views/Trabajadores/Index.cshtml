@@ -1,0 +1,146 @@
+@{
+    ViewData["Title"] = "Trabajadores";
+}
+
+<div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <p class="text-4xl font-black">Trabajadores</p>
+            <p class="text-[#6e6189] dark:text-gray-400 text-base">
+                Gestiona la información de todos los trabajadores.
+            </p>
+        </div>
+
+        <button id="btnNuevo"
+                class="flex items-center gap-2 h-10 px-4 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+            <span class="material-symbols-outlined">add</span>
+            Nuevo trabajador
+        </button>
+    </div>
+
+    <!-- Filtro por sexo -->
+    <div class="mb-6 flex w-full sm:w-auto gap-2 bg-gray-200 dark:bg-white/10 p-1 rounded-lg">
+
+        <label class="cursor-pointer flex-1 py-2 px-4 rounded-lg text-center has-[:checked]:bg-white has-[:checked]:shadow-sm has-[:checked]:text-primary dark:has-[:checked]:bg-primary/50">
+            Todos
+            <input type="radio" name="gender-filter" value="" class="hidden" checked />
+        </label>
+
+        <label class="cursor-pointer flex-1 py-2 px-4 rounded-lg text-center has-[:checked]:bg-white has-[:checked]:shadow-sm has-[:checked]:text-primary dark:has-[:checked]:bg-primary/50">
+            Masculino
+            <input type="radio" name="gender-filter" value="M" class="hidden" />
+        </label>
+
+        <label class="cursor-pointer flex-1 py-2 px-4 rounded-lg text-center has-[:checked]:bg-white has-[:checked]:shadow-sm has-[:checked]:text-primary dark:has-[:checked]:bg-primary/50">
+            Femenino
+            <input type="radio" name="gender-filter" value="F" class="hidden" />
+        </label>
+    </div>
+
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-background-dark rounded-lg shadow">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Foto</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Nombres</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Apellidos</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Documento</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">N°</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Sexo</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Nacimiento</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Dirección</th>
+                    <th class="px-4 py-3 text-right text-sm font-semibold">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody id="tbody" class="divide-y divide-gray-200 dark:divide-gray-700">               
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODALES -->
+<div id="modalContainer"></div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+        function cargarTabla() {
+            let sexo = $("input[name='gender-filter']:checked").val();
+
+            $.get("/Trabajadores/Listar", { sexo: sexo }, function (res) {
+                let html = "";
+
+                res.data.forEach(item => {
+
+                    let color = item.sexo === "M" ? "bg-[#3B82F6]/20" : "bg-[#F97316]/20";
+
+                    html += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${color}">
+                            <td class="px-4 py-3">
+                                <div class="size-10 rounded-full bg-cover bg-center"
+                                        style="background-image:url('/fotos/${item.foto}')"></div>
+                            </td>
+                            <td class="px-4 py-3">${item.nombres}</td>
+                            <td class="px-4 py-3">${item.apellidos}</td>
+                            <td class="px-4 py-3">${item.tipoDocumento}</td>
+                            <td class="px-4 py-3">${item.numeroDocumento}</td>
+                            <td class="px-4 py-3">${item.sexo}</td>
+                            <td class="px-4 py-3">${item.fechaNacimiento.split("T")[0]}</td>
+                            <td class="px-4 py-3">${item.direccion}</td>
+
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button onclick="abrirEditar(${item.id})" class="text-[#6e6189] hover:text-primary">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+
+                                    <button onclick="abrirEliminar(${item.id})" class="text-[#6e6189] hover:text-red-500">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                $("#tbody").html(html);
+            });
+        }
+
+        $("input[name='gender-filter']").change(function () {
+            cargarTabla();
+        });
+
+        function abrirCrear() {
+            $.get("/Trabajadores/Crear", function (vista) {
+                $("#modalContainer").html(vista);
+                $("#modalCrear").show();
+            });
+        }
+
+        function abrirEditar(id) {
+            $.get("/Trabajadores/Editar/" + id, function (vista) {
+                $("#modalContainer").html(vista);
+                $("#modalEditar").show();
+            });
+        }
+
+        function abrirEliminar(id) {
+            $.get("/Trabajadores/Eliminar/" + id, function (vista) {
+                $("#modalContainer").html(vista);
+                $("#modalEliminar").show();
+            });
+        }
+
+        $("#btnNuevo").click(() => abrirCrear());
+
+        cargarTabla();
+
+    </script>
+}
